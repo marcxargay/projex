@@ -6,6 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "nodemon app.js",
+    "debug": "nodemon --inspect app.js",
     "start-server": "node app.js",
     "start-db": "\\Users\\MXargay\\mongodb\\bin\\mongod --dbpath=\\Users\\MXargay\\mongodb-data"
   },

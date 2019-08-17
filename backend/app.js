@@ -14,5 +14,6 @@ app.use(userRoutes);
 app.use(projectRoutes);
 
 mongoConnect(() => {
+  console.log('Connected PORT:', PORT)
   app.listen(PORT)
 })

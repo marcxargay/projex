@@ -1,29 +1,75 @@
 const { getDb } = require('../util/database');
-
+const mongodb = require('mongodb');
 class Project {
-  constructor(title, userName) {
+  constructor(title, user_id, id, description, link, tags) {
     this.title = title;
-    this.userName = userName
-  }
-  save(cb) {
-    const db = getDb();
-    db.collection('projects').insertOne(this)
-      .then(project => {
-        cb(project);
-      })
-      .catch(err => { throw err })
+    this.user_id = user_id ? new mongodb.ObjectId(user_id) : nullñ;
+    this.description = description;
+    this._id = id ? new mongodb.ObjectId(id) : null;
+    this.link = link;
+    this.tags = tags;
+    this.score = { value: null, votes: 0, sum: 0 }
   }
 
-  static fetchAll(cb) {
+  save() {
     const db = getDb();
-    db.collection('projects').find({}).toArray()
+    return db.collection('projects').insertOne(this)
+  }
+
+  update() {
+    const db = getDb();
+    return db.collection('projects')
+      .updateOne({ _id: this._id }, { $set: this })
+
+  }
+
+  static fetchAll() {
+    const db = getDb();
+    return db.collection('projects').find({}).toArray()
       .then(projects => {
-        cb(projects);
+        console.log(projects);
       })
       .catch(err => {
-        throw err;
+        console.log(err);
       });
   }
+
+  static findById(projectId) {
+    const db = getDb();
+    return db.collection('projects')
+      .find({ _id: new mongodb.ObjectId(projectId) })
+      .next()
+      .then(project => {
+        console.log(project);
+        return project;
+      })
+      .catch(err => { throw err; });
+  }
+
+  static deleteById(projectId) {
+    const db = getDb();
+
+    return db.collection('projects')
+      .deleteOne({ _id: new mongodb.ObjectId(projectId) })
+  }
+
+  static updateScore(id, score) {
+    const db = getDb();
+
+    return this.findById(id).then(project => {
+
+      let pScore = project.score;
+      pScore.sum += score;
+      pScore.votes++;
+      pScore.value = pScore.sum / pScore.votes;
+
+      project.score = pScore;
+
+      return db.collection('projects')
+        .updateOne({ _id: project._id }, { $set: project })
+    })
+  }
+
 }
 
 module.exports = Project;

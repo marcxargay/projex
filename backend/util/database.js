@@ -9,7 +9,7 @@ const connectionURL = 'mongodb://127.0.0.1:27017'
 exports.mongoConnect = cb => {
   MongoClient.connect(connectionURL, { useNewUrlParser: true, useUnifiedTopology: true  })
     .then(client => {
-      console.log('connected');
+      
       _db = client.db(db_name);
       cb();
     })
