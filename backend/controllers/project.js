@@ -12,9 +12,9 @@ exports.postAddProject = (req, res) => {
   project.save()
     .then(result => {
       if (result.insertedCount > 0) {
-        res.status(201).send({ message: 'Project created' })
+        res.status(201).send({ message: 'Project created' });
       } else {
-        res.status(500).send({ message: 'Error: Project not created' })
+        res.status(500).send({ message: 'Error: Project not created' });
       }
     })
     .catch(err => { res.send(err); })
