@@ -1,10 +1,12 @@
 const { getDb } = require('../util/database');
-
+const Project = require('../models/project');
 class User {
   constructor(name, email, password) {
     this.name = name;
     this.email = email;
     this.password = password;
+    this.liked = [];
+    this.scored = [];
   }
 
   save(cb) {
@@ -26,6 +28,39 @@ class User {
       })
       .catch(err => { throw err })
     // console.log(cursor)
+  }
+  like(id, value) {
+    const db = getDb();
+    return Project.findById(id).then(project => {
+
+      if (value > 0) {
+        project.likes.like++;
+      } else {
+        project.likes.dislikes++;
+      }
+      this.liked.push(project._id);
+
+      return db.collection('projects')
+        .updateOne({ _id: project._id }, { $set: project })
+    })
+  }
+  score() {
+    const db = getDb();
+
+    return Project.findById(id).then(project => {
+
+      let pScore = project.score;
+      pScore.sum += score;
+      pScore.votes++;
+      pScore.value = pScore.sum / pScore.votes;
+
+      this.scored.push(id);
+
+      project.score = pScore;
+
+      return db.collection('projects')
+        .updateOne({ _id: project._id }, { $set: project })
+    })
   }
 }
 

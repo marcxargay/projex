@@ -3,12 +3,13 @@ const mongodb = require('mongodb');
 class Project {
   constructor(title, user_id, id, description, link, tags) {
     this.title = title;
-    this.user_id = user_id ? new mongodb.ObjectId(user_id) : nullñ;
+    this.user_id = user_id ? new mongodb.ObjectId(user_id) : null;
     this.description = description;
     this._id = id ? new mongodb.ObjectId(id) : null;
     this.link = link;
     this.tags = tags;
-    this.score = { value: null, votes: 0, sum: 0 }
+    this.score = { value: null, votes: 0, sum: 0 };
+    this.liked = { likes: 0, dislikes: 0 };
   }
 
   save() {
@@ -62,6 +63,8 @@ class Project {
       pScore.sum += score;
       pScore.votes++;
       pScore.value = pScore.sum / pScore.votes;
+
+      pScore.users.push(id);
 
       project.score = pScore;
 
