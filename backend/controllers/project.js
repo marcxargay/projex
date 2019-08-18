@@ -7,7 +7,7 @@ exports.postAddProject = (req, res) => {
   const link = req.body.link ? req.body.link : null;
   const tags = req.body.tags ? req.body.tags : null;
 
-  const project = new Project(title, user_id, null, description, link, tags);
+  const project = new Project(title, user_id, null, description, link, tags); 
 
   project.save()
     .then(result => {
